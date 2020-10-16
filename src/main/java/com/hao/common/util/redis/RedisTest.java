@@ -12,7 +12,7 @@ public class RedisTest {
     public void setJedis(){
         // connect redis server
         String redisHost = "127.0.0.1";
-        Integer redisPort = 6379;
+        int redisPort = 6379;
         jedis = new Jedis(redisHost, redisPort);
         // auth
         String redisPassword = "123456";
