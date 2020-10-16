@@ -10,11 +10,11 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 public final class RedisPool {
     //Redis服务器IP
-    private static String ADDR = "127.0.0.1";
+    private static String ADDR = "10.16.70.192";
     //Redis的端口号
     private static Integer PORT = 6379;
     //访问密码
-    private static String AUTH = "chenhaoxiang";
+    private static String AUTH = "PEJlpxSiA2vg";
 
     //可用连接实例的最大数目，默认为8；
     //如果赋值为-1，则表示不限制，如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)
@@ -60,8 +60,7 @@ public final class RedisPool {
     public synchronized static Jedis getJedis(){
         try {
             if(jedisPool != null){
-                Jedis jedis = jedisPool.getResource();
-                return jedis;
+                return jedisPool.getResource();
             }else{
                 return null;
             }
@@ -77,6 +76,35 @@ public final class RedisPool {
             jedisPool.returnResource(jedis);
             //jedis.close()取代jedisPool.returnResource(jedis)方法将3.0版本开始
             //jedis.close();
+        }
+    }
+    /**
+     * Redis操作字符串
+     */
+    public static void testString(Jedis jedis) {
+        System.out.println("Redis String");
+        //添加数据
+        jedis.set("name", "chx"); //key为name放入value值为chx
+        System.out.println("拼接前:" + jedis.get("name"));//读取key为name的值
+
+        //向key为name的值后面加上数据 ---拼接
+        jedis.append("name", " is my name;");
+        System.out.println("拼接后:" + jedis.get("name"));
+
+        //删除某个键值对
+        jedis.del("name");
+        System.out.println("删除后:" + jedis.get("name"));
+
+        //s设置多个键值对
+        jedis.mset("name", "chenhaoxiang", "age", "20", "email", "chxpostbox@outlook.com");
+        jedis.incr("age");//用于将键的整数值递增1。如果键不存在，则在执行操作之前将其设置为0。 如果键包含错误类型的值或包含无法表示为整数的字符串，则会返回错误。此操作限于64位有符号整数。
+        System.out.println(jedis.get("name") + " " + jedis.get("age") + " " + jedis.get("email"));
+    }
+
+    public static void main(String[] args) {
+        Jedis jedis = RedisPool.getJedis();
+        if (jedis != null){
+            RedisPool.testString(jedis);
         }
     }
 }
