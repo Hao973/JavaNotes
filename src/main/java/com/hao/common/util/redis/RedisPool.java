@@ -1,8 +1,13 @@
 package com.hao.common.util.redis;
 
+import java.util.ArrayList;
+import java.util.Random;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+
+
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,6 +18,8 @@ public final class RedisPool {
     private final static String ADDR = "10.16.70.192";
     //Redis的端口号
     private final static Integer PORT = 6379;
+    //Redis服务器列表
+    private final static String REDIS_HOSTS = "10.16.70.190:6379,10.16.70.191:6379,10.16.70.192:6379,10.16.70.193:6379,10.16.70.194:6379";
     //访问密码
     private final static String AUTH = "PEJlpxSiA2vg";
 
@@ -52,6 +59,21 @@ public final class RedisPool {
         }
 
     }
+
+//    public static HashMap<String, Integer> getRedisHost(String redisServers){
+//        String[] serversList = redisServers.split(",");
+//        int serversLen = serversList.length;
+//        ArrayList<HashMap<String, Integer>> redisHost = new ArrayList<HashMap<String, Integer>>();
+//        for(String server: serversList){
+//            System.out.println(server);
+//            String[] hostPort = server.split(":");
+//            Map<String, nt> map = new
+//            redisHost.add(new HashMap<String, Integer>("host", hostPort[0]));
+//        }
+//        Random rand = new Random(serversLen);
+//        int index = rand.nextInt();
+//        return redisHost.get(index);
+//    }
 
     /*
      * 获取Jedis实例
