@@ -8,6 +8,7 @@ import redis.clients.jedis.Jedis;
 
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Random;
 
 
 public class ProtosTest {
@@ -63,14 +64,26 @@ public class ProtosTest {
         parseCTRedisInfo(redisValue);
     }
 
+    public static Jedis getRandomRedis(String redisConfInfo, String redisPassword){
+        String[] redisConfList = redisConfInfo.split(",");
+        int randomNum = (new Random()).nextInt(redisConfList.length);
+        String randomConf = redisConfList[randomNum];
+        String redisHost = randomConf.split(":")[0];
+        int redisPort = Integer.parseInt(randomConf.split(":")[1]);
+        Jedis jedis = new Jedis(redisHost, redisPort);
+        System.out.println("connect redis[" + redisHost + ": " + redisPort + "] ok");
+        jedis.auth(redisPassword);
+        return jedis;
+    }
+
     public static void queryRedisInfo192(){
         //redis-cli -h 10.16.70.192 -p 6379 -a PEJlpxSiA2vg
-        String redisHost = "10.16.70.192";
-        int redisPort = 6379;
-        Jedis jedis = new Jedis(redisHost, redisPort);
+//        String redisHost = "10.16.70.192";
+//        int redisPort = 6379;
+//        Jedis jedis = new Jedis(redisHost, redisPort);
+        String redisConfInfo = "10.16.70.192:6379,10.16.70.192:6379,10.16.70.192:6379,10.16.70.192:6379";
         String redisPassword = "PEJlpxSiA2vg";
-        jedis.auth(redisPassword);
-        System.out.println("connect redis[" + redisHost + ": " + redisHost + "] ok");
+        Jedis jedis = getRandomRedis(redisConfInfo, redisPassword);
         String[] keyList = {"ct_news_stop_432338728", "ct_news_stop_432340255"};
         for(String key: keyList){
             System.out.println("-------------------------------------");

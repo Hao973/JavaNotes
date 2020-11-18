@@ -1,11 +1,8 @@
 package com.hao.common.util.redis;
 
-import com.sun.prism.shader.Solid_TextureYV12_AlphaTest_Loader;
 import redis.clients.jedis.Jedis;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 public class RedisTest {
     private Jedis jedis;
@@ -19,6 +16,18 @@ public class RedisTest {
         String redisPassword = "PEJlpxSiA2vg";
         jedis.auth(redisPassword);
         System.out.println("connect redis[" + redisHost + ": " + redisHost + "] ok");
+    }
+
+    public static Jedis getRandomRedis(String redisConfInfo, String redisPassword){
+        String[] redisConfList = redisConfInfo.split(",");
+        int randomNum = (new Random()).nextInt(redisConfList.length);
+        String randomConf = redisConfList[randomNum];
+        String redisHost = randomConf.split(":")[0];
+        int redisPort = Integer.parseInt(randomConf.split(":")[1]);
+        Jedis jedis = new Jedis(redisHost, redisPort);
+        System.out.println("connect redis[" + redisHost + ": " + redisPort + "] ok");
+        jedis.auth(redisPassword);
+        return jedis;
     }
 
     /**
