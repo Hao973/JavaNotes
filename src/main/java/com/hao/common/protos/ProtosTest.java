@@ -6,6 +6,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import redis.clients.jedis.Jedis;
 
+import java.util.Arrays;
 import java.util.Base64;
 
 
@@ -28,7 +29,9 @@ public class ProtosTest {
         System.out.println(ret);
         String encoded = Base64.getEncoder().encodeToString(ret);
         System.out.println("encoded: " +  encoded);
-        DmpService.PageAttributeResponse response = DmpService.PageAttributeResponse.parseFrom(ret);
+        String strString = new String(ret);
+        System.out.println("strString: " +  strString);
+        DmpService.PageAttributeResponse response = DmpService.PageAttributeResponse.parseFrom(strString.getBytes());
         System.out.println(response);
         for(cm.CommonTypes.Keyword keyword: response.getPageKeywordList()){
             Long keywordId = keyword.getKeywordId();
@@ -36,15 +39,63 @@ public class ProtosTest {
         }
     }
     public static void testRedisData(){
-        String redisHost = "127.0.0.1";
+        //redis-cli -h 10.16.70.194 -p 6379 -a ER8YKWPm
+        String redisHost = "10.16.70.194";
         int redisPort = 6379;
         Jedis jedis = new Jedis(redisHost, redisPort);
         // auth
-        String redisPassword = "123456";
+        String redisPassword = "ER8YKWPm";
         jedis.auth(redisPassword);
         System.out.println("connect redis[" + redisHost + ": " + redisHost + "] ok");
+        String keyStr = "ct_app_492012002";
+        String keyStr1 = "ct_app_stop_492012002";
+        byte[] ret = jedis.get(keyStr1.getBytes());
+//        System.out.println(Arrays.toString(ret));
+        try {
+            DmpService.PageAttributeResponse response = DmpService.PageAttributeResponse.parseFrom(ret);
+            System.out.println(response);
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("******************************");
+        byte[] redisValue = jedis.get(keyStr.getBytes());
+        parseCTRedisInfo(redisValue);
     }
-    public static void main(String[] args) throws InvalidProtocolBufferException {
-        testProtosTest();
+
+    public static void queryRedisInfo192(){
+        //redis-cli -h 10.16.70.192 -p 6379 -a PEJlpxSiA2vg
+        String redisHost = "10.16.70.192";
+        int redisPort = 6379;
+        Jedis jedis = new Jedis(redisHost, redisPort);
+        String redisPassword = "PEJlpxSiA2vg";
+        jedis.auth(redisPassword);
+        System.out.println("connect redis[" + redisHost + ": " + redisHost + "] ok");
+        String[] keyList = {"ct_news_stop_432338728", "ct_news_stop_432340255"};
+        for(String key: keyList){
+            System.out.println("-------------------------------------");
+            System.out.println("key: " + key);
+            byte[] redisValue = jedis.get(key.getBytes());
+            parseCTRedisInfo(redisValue);
+        }
+        jedis.close();
+    }
+
+    public static void parseCTRedisInfo(byte[] redisValue){
+        try {
+            DmpService.PageAttributeResponse response = DmpService.PageAttributeResponse.parseFrom(redisValue);
+            for(cm.CommonTypes.Keyword keyword: response.getPageKeywordList()){
+                System.out.println(keyword.getKeywordId());
+                System.out.println(keyword.getText().toStringUtf8());
+            }
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+//        testProtosTest();
+//        testRedisData();
+        queryRedisInfo192();
     }
 }

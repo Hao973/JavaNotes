@@ -78,6 +78,7 @@ public class RedisTest {
         for (Map.Entry<String, String> entry : ctNewsStopWordsMap.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
+        System.out.println(ctNewsStopWordsMap.size());
     }
 
     /**
