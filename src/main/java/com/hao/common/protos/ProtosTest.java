@@ -84,7 +84,25 @@ public class ProtosTest {
         String redisConfInfo = "10.16.70.192:6379,10.16.70.192:6379,10.16.70.192:6379,10.16.70.192:6379";
         String redisPassword = "PEJlpxSiA2vg";
         Jedis jedis = getRandomRedis(redisConfInfo, redisPassword);
-        String[] keyList = {"ct_news_stop_432338728", "ct_news_stop_432340255"};
+        String[] keyList = {"ct_app_stop_468105180", "ct_app_stop_491910353"};
+        for(String key: keyList){
+            System.out.println("-------------------------------------");
+            System.out.println("key: " + key);
+            byte[] redisValue = jedis.get(key.getBytes());
+            parseCTRedisInfo(redisValue);
+        }
+        jedis.close();
+    }
+
+    public static void queryRedisInfo194(){
+        //redis-cli -h 10.16.70.192 -p 6379 -a PEJlpxSiA2vg
+//        String redisHost = "10.16.70.192";
+//        int redisPort = 6379;
+//        Jedis jedis = new Jedis(redisHost, redisPort);
+        String redisConfInfo = "10.16.70.194:6379,10.16.70.194:6379,10.16.70.194:6379,10.16.70.194:6379";
+        String redisPassword = "ER8YKWPm";
+        Jedis jedis = getRandomRedis(redisConfInfo, redisPassword);
+        String[] keyList = {"ct_app_stop_468105180", "ct_app_stop_491910353"};
         for(String key: keyList){
             System.out.println("-------------------------------------");
             System.out.println("key: " + key);
@@ -109,6 +127,6 @@ public class ProtosTest {
     public static void main(String[] args) throws Exception {
 //        testProtosTest();
 //        testRedisData();
-        queryRedisInfo192();
+        queryRedisInfo194();
     }
 }
