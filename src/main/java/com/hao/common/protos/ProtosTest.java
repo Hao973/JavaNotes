@@ -6,6 +6,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import redis.clients.jedis.Jedis;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
@@ -84,11 +85,15 @@ public class ProtosTest {
         String redisConfInfo = "10.16.70.192:6379,10.16.70.192:6379,10.16.70.192:6379,10.16.70.192:6379";
         String redisPassword = "PEJlpxSiA2vg";
         Jedis jedis = getRandomRedis(redisConfInfo, redisPassword);
-        String[] keyList = {"ct_app_stop_468105180", "ct_app_stop_491910353"};
+        String[] keyList = {"ct_news_stop_433936955", "ct_app_stop_498600890"};
         for(String key: keyList){
             System.out.println("-------------------------------------");
             System.out.println("key: " + key);
             byte[] redisValue = jedis.get(key.getBytes());
+            if(null == redisValue) {
+                System.out.println("key: " + key + "is null");
+                continue;
+            }
             parseCTRedisInfo(redisValue);
         }
         jedis.close();
@@ -102,7 +107,7 @@ public class ProtosTest {
         String redisConfInfo = "10.16.70.194:6379,10.16.70.194:6379,10.16.70.194:6379,10.16.70.194:6379";
         String redisPassword = "ER8YKWPm";
         Jedis jedis = getRandomRedis(redisConfInfo, redisPassword);
-        String[] keyList = {"ct_app_stop_468105180", "ct_app_stop_491910353"};
+        String[] keyList = {"ct_news_stop_test_428779059", "ct_app_stop_498600890"};
         for(String key: keyList){
             System.out.println("-------------------------------------");
             System.out.println("key: " + key);
@@ -112,13 +117,61 @@ public class ProtosTest {
         jedis.close();
     }
 
+    public static void queryRedisInfo(String redisConfInfo, String redisPassword, String[] keyList){
+        Jedis jedis = getRandomRedis(redisConfInfo, redisPassword);
+        for(String key: keyList){
+            System.out.println("-------------------------------------");
+            System.out.println("key: " + key);
+            byte[] redisValue = jedis.get(key.getBytes());
+            if(null == redisValue) {
+                System.out.println("key: " + key + "is null");
+                continue;
+            }
+            parseCTRedisInfo(redisValue);
+        }
+        jedis.close();
+    }
+
+    public static void queryRedisInfoV2(String redisConfInfo, String redisPassword, ArrayList<String> keyList){
+        Jedis jedis = getRandomRedis(redisConfInfo, redisPassword);
+        for(String key: keyList){
+            System.out.println("-------------------------------------");
+            System.out.println("key: " + key);
+            byte[] redisValue = jedis.get(key.getBytes());
+            if(null == redisValue) {
+                System.out.println("key: " + key + "is null");
+                continue;
+            }
+            parseCTRedisInfo(redisValue);
+        }
+        jedis.close();
+    }
+
+    public static void queryRedisInfoOnline(){
+        String redisConfInfo = "10.18.70.87:20000,10.18.70.87:30000,10.18.70.88:20000,10.18.70.88:30000";
+        String redisPassword = "YIw3IDWu";
+//        String[] keyList = {"ct_news_stop_433929513", "ct_app_stop_498727841", "ct_news_stop_433930279", "ct_news_stop_433936734"};
+//        String[] keyList = {"ct_news_stop_432446338", "ct_news_432446338"};
+//        ProtosTest.queryRedisInfo(redisConfInfo, redisPassword, keyList);
+        String[] docIDs = {"430221262", "429931352", "430739347", "431843754", "430782364", "432446338", "433338705"};
+        ArrayList<String> keyList = new ArrayList<>();
+        for(String docId: docIDs){
+            keyList.add("ct_news_stop_" + docId);
+            keyList.add("ct_news_" + docId);
+        }
+        ProtosTest.queryRedisInfoV2(redisConfInfo, redisPassword, keyList);
+    }
+
     public static void parseCTRedisInfo(byte[] redisValue){
         try {
             DmpService.PageAttributeResponse response = DmpService.PageAttributeResponse.parseFrom(redisValue);
+            StringBuffer keywordInfo = new StringBuffer();
             for(cm.CommonTypes.Keyword keyword: response.getPageKeywordList()){
-                System.out.println(keyword.getKeywordId());
-                System.out.println(keyword.getText().toStringUtf8());
+//                System.out.println(keyword.getKeywordId() + ": ");
+//                System.out.println(keyword.getText().toStringUtf8());
+                keywordInfo.append(keyword.getKeywordId()).append(":").append(keyword.getText().toStringUtf8()).append(",");
             }
+            System.out.println(keywordInfo.toString());
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }
@@ -127,6 +180,7 @@ public class ProtosTest {
     public static void main(String[] args) throws Exception {
 //        testProtosTest();
 //        testRedisData();
-        queryRedisInfo194();
+//        queryRedisInfo192();
+        queryRedisInfoOnline();
     }
 }

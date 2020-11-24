@@ -16,7 +16,7 @@ public class ADPAuthorDataTool {
             String authorID = authorInfo.split(",")[1];
             String hashID = authorInfo.split(",")[2];
             System.out.println(authorID + ": " + hashID);
-            String redisKey = "author_news" + authorID;
+            String redisKey = "author_news_" + authorID;
             jedis.set(redisKey, hashID);
         }
         jedis.close();
