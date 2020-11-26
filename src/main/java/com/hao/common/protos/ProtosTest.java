@@ -6,10 +6,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import redis.clients.jedis.Jedis;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 public class ProtosTest {
@@ -18,7 +16,8 @@ public class ProtosTest {
         CommonTypes.Keyword.Builder builder = CommonTypes.Keyword.newBuilder();
         builder.setText(text);
         builder.setKeywordId(1234456);
-        builder.setTimestamp(0);
+        long timeStamp = new Date().getTime();
+        builder.setTimestamp(timeStamp);
         builder.setWeight(0);
         System.out.println(builder.build());
         DmpService.PageAttributeResponse.Builder responseBuilder = DmpService.PageAttributeResponse.newBuilder();
@@ -77,27 +76,6 @@ public class ProtosTest {
         return jedis;
     }
 
-    public static void queryRedisInfo192(){
-        //redis-cli -h 10.16.70.192 -p 6379 -a PEJlpxSiA2vg
-//        String redisHost = "10.16.70.192";
-//        int redisPort = 6379;
-//        Jedis jedis = new Jedis(redisHost, redisPort);
-        String redisConfInfo = "10.16.70.192:6379,10.16.70.192:6379,10.16.70.192:6379,10.16.70.192:6379";
-        String redisPassword = "PEJlpxSiA2vg";
-        Jedis jedis = getRandomRedis(redisConfInfo, redisPassword);
-        String[] keyList = {"ct_news_stop_433936955", "ct_app_stop_498600890"};
-        for(String key: keyList){
-            System.out.println("-------------------------------------");
-            System.out.println("key: " + key);
-            byte[] redisValue = jedis.get(key.getBytes());
-            if(null == redisValue) {
-                System.out.println("key: " + key + "is null");
-                continue;
-            }
-            parseCTRedisInfo(redisValue);
-        }
-        jedis.close();
-    }
 
     public static void queryRedisInfo194(){
         //redis-cli -h 10.16.70.192 -p 6379 -a PEJlpxSiA2vg
@@ -147,7 +125,18 @@ public class ProtosTest {
         jedis.close();
     }
 
-    public static void queryRedisInfoOnline(){
+    public static void queryRedisCTNewsStopWordsInfoOnline(){
+        String redisConfInfo = "10.18.70.87:20000,10.18.70.87:30000,10.18.70.88:20000,10.18.70.88:30000";
+        String redisPassword = "YIw3IDWu";
+        Jedis jedis = getRandomRedis(redisConfInfo, redisPassword);
+        Map<String, String> ctNewsStopWordsMap = jedis.hgetAll("ct_news_stop_words");
+        jedis.close();
+        for (Map.Entry<String, String> entry : ctNewsStopWordsMap.entrySet()) {
+          System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        }
+    }
+
+    public static void queryRedisInfoOnlineV2(){
         String redisConfInfo = "10.18.70.87:20000,10.18.70.87:30000,10.18.70.88:20000,10.18.70.88:30000";
         String redisPassword = "YIw3IDWu";
 //        String[] keyList = {"ct_news_stop_433929513", "ct_app_stop_498727841", "ct_news_stop_433930279", "ct_news_stop_433936734"};
@@ -162,14 +151,36 @@ public class ProtosTest {
         ProtosTest.queryRedisInfoV2(redisConfInfo, redisPassword, keyList);
     }
 
+    public static void queryRedisInfo192(){
+        String redisConfInfo = "10.16.70.192:6379,10.16.70.192:6379,10.16.70.192:6379,10.16.70.192:6379";
+        String redisPassword = "PEJlpxSiA2vg";
+        String[] keyList = {"ct_news_stop_434395535", "ct_app_stop_499274105", "ct_app_stop_499274977"};
+        ProtosTest.queryRedisInfo(redisConfInfo, redisPassword, keyList);
+    }
+
+    public static void queryRedisInfoOnline(){
+        String redisConfInfo = "10.18.70.87:20000,10.18.70.87:30000,10.18.70.88:20000,10.18.70.88:30000";
+        String redisPassword = "YIw3IDWu";
+        String[] keyList = {"ct_news_stop_434395535", "ct_app_stop_499274105", "ct_app_stop_499274977"};
+        ProtosTest.queryRedisInfo(redisConfInfo, redisPassword, keyList);
+    }
+
+
     public static void parseCTRedisInfo(byte[] redisValue){
         try {
             DmpService.PageAttributeResponse response = DmpService.PageAttributeResponse.parseFrom(redisValue);
             StringBuffer keywordInfo = new StringBuffer();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        long timeStamp= new Long(s);
             for(cm.CommonTypes.Keyword keyword: response.getPageKeywordList()){
 //                System.out.println(keyword.getKeywordId() + ": ");
 //                System.out.println(keyword.getText().toStringUtf8());
-                keywordInfo.append(keyword.getKeywordId()).append(":").append(keyword.getText().toStringUtf8()).append(",");
+//                String dateInfo = keyword.getTimestamp();
+                Date date = new Date(keyword.getTimestamp());
+                String time= simpleDateFormat.format(date);
+                keywordInfo.append(time).append(",")
+                        .append(keyword.getKeywordId()).append(":")
+                        .append(keyword.getText().toStringUtf8()).append("|");
             }
             System.out.println(keywordInfo.toString());
         } catch (InvalidProtocolBufferException e) {
@@ -177,10 +188,23 @@ public class ProtosTest {
         }
     }
 
+    public static void timeTest(){
+        long time3 = new Date().getTime();
+        System.out.println(time3);
+        //s是String类型的时间戳
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        long timeStamp= new Long(s);
+        Date date = new Date(time3);
+        String time= simpleDateFormat.format(date);
+        System.out.println(time);
+    }
+
     public static void main(String[] args) throws Exception {
 //        testProtosTest();
 //        testRedisData();
-//        queryRedisInfo192();
+        queryRedisInfo192();
         queryRedisInfoOnline();
+//        queryRedisInfoOnlineV2();
+//        queryRedisCTNewsStopWordsInfoOnline();
     }
 }
