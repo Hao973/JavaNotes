@@ -1,4 +1,4 @@
-package hao.code.http
+package hao.http
 
 import java.net.URL
 import java.net.HttpURLConnection

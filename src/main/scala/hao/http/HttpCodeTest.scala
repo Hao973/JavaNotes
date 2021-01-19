@@ -1,9 +1,7 @@
-package hao.code.http
-
-import hao.code.http.HttpClient1
+package hao.http
 
 import util.control.Breaks._
-import com.alibaba.fastjson.{JSON, JSONObject, JSONArray}
+import com.alibaba.fastjson.{JSON, JSONArray, JSONObject}
 
 import scala.collection.mutable.ArrayBuffer
 

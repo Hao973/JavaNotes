@@ -1,10 +1,9 @@
-package com.hao.common.util.mysql;
+package hao.util.mysql;
 
 import ads.DmpService;
 import cm.CommonTypes;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import redis.clients.jedis.Jedis;
 
 import java.sql.*;

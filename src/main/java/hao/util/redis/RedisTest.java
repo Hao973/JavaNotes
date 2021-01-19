@@ -1,4 +1,4 @@
-package com.hao.common.util.redis;
+package hao.util.redis;
 
 import redis.clients.jedis.Jedis;
 

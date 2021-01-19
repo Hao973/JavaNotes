@@ -1,4 +1,4 @@
-package com.hao.common.util.hash;
+package hao.util.hash;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more

@@ -1,4 +1,4 @@
-package work_tool;
+package work;
 
 import redis.clients.jedis.Jedis;
 

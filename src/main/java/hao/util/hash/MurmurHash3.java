@@ -1,4 +1,4 @@
-package com.hao.common.util.hash;
+package hao.util.hash;
 
 /**
  *  The MurmurHash3 algorithm was created by Austin Appleby and placed in the public domain.
