@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package cm;
+
+// -----------------------------
+// Information about the device.
+// -----------------------------
+
+
+message Keyword {
+    optional int64      keyword_id  = 1;
+    optional double     weight      = 2;
+    optional uint64     timestamp   = 3;
+    optional bytes      text        = 4;
+}
+
+enum PageTagType {
+    PAGE_POLITICAL_SENSITIVE    = 1;
+}

@@ -1,0 +1,28 @@
+syntax = "proto2";
+
+import "common_types.proto";
+
+package com.hao.common.protos;
+
+option cc_generic_services = true;
+option java_generic_services = true;
+
+message PageAttributeRequest {
+    // search id
+    optional bytes id = 1;
+    // page id
+    optional string page_id = 2;
+    // page url
+    optional string url = 3;
+}
+
+message PageAttributeResponse {
+    // keyword list
+    repeated cm.Keyword page_keyword = 1;
+    // page tag
+    repeated cm.PageTagType page_tag = 2;
+}
+
+service PageAttributeService {
+   rpc search (PageAttributeRequest) returns (PageAttributeResponse);
+}

@@ -1,13 +1,8 @@
-package com.hao.common.util.redis;
+package hao.util.redis;
 
-import java.util.ArrayList;
-import java.util.Random;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-
-
-import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.

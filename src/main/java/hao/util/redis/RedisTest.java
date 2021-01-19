@@ -1,23 +1,33 @@
-package com.hao.common.util.redis;
+package hao.util.redis;
 
 import redis.clients.jedis.Jedis;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 public class RedisTest {
     private Jedis jedis;
 
     public void setJedis(){
         // connect redis server
-        String redisHost = "127.0.0.1";
+        String redisHost = "10.16.70.192";
         int redisPort = 6379;
         jedis = new Jedis(redisHost, redisPort);
         // auth
-        String redisPassword = "123456";
+        String redisPassword = "PEJlpxSiA2vg";
         jedis.auth(redisPassword);
         System.out.println("connect redis[" + redisHost + ": " + redisHost + "] ok");
+    }
+
+    public static Jedis getRandomRedis(String redisConfInfo, String redisPassword){
+        String[] redisConfList = redisConfInfo.split(",");
+        int randomNum = (new Random()).nextInt(redisConfList.length);
+        String randomConf = redisConfList[randomNum];
+        String redisHost = randomConf.split(":")[0];
+        int redisPort = Integer.parseInt(randomConf.split(":")[1]);
+        Jedis jedis = new Jedis(redisHost, redisPort);
+        System.out.println("connect redis[" + redisHost + ": " + redisPort + "] ok");
+        jedis.auth(redisPassword);
+        return jedis;
     }
 
     /**
@@ -73,6 +83,11 @@ public class RedisTest {
         jedis.del("user");
         System.out.println("删除后是否存在key为user的记录:" + jedis.exists("user"));//是否存在key为user的记录
 
+        Map<String, String> ctNewsStopWordsMap = jedis.hgetAll("ct_news_stop_words");
+        for (Map.Entry<String, String> entry : ctNewsStopWordsMap.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+        System.out.println(ctNewsStopWordsMap.size());
     }
 
     /**
@@ -139,11 +154,11 @@ public class RedisTest {
     public static void main(String[] args) {
         RedisTest redisTest = new RedisTest();
         redisTest.setJedis();
-        redisTest.testString();
-        redisTest.testList();
+//        redisTest.testString();
+//        redisTest.testList();
         redisTest.testMap();
-        redisTest.testSet();
-        redisTest.test();
+//        redisTest.testSet();
+//        redisTest.test();
     }
 }
 
