@@ -6,6 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>JavaNotes</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <build>
         <plugins>
@@ -19,6 +20,9 @@
             </plugin>
         </plugins>
     </build>
+    <modules>
+        <module>WorkNotes</module>
+    </modules>
 
     <properties>
         <scala.version>2.11.8</scala.version>

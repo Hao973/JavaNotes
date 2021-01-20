@@ -26,5 +26,5 @@ bin/
 hs_err_pid*
 
 # work file
-src/main/java/work/
+WorkNotes/src/
 
