@@ -1,7 +1,7 @@
 package hao.designpattern.singleton;
 
 public class Singleton3 {
-    private static Singleton3 uniqueInstance;
+    private volatile static Singleton3 uniqueInstance;
     private Singleton3(){
 
     }
