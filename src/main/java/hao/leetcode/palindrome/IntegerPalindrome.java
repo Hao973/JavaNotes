@@ -1,4 +1,4 @@
-package hao.leetcode.reverse;
+package hao.leetcode.palindrome;
 
 public class IntegerPalindrome {
     public static boolean integerPalindrome(int x){

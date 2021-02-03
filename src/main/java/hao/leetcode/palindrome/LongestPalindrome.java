@@ -1,4 +1,4 @@
-package hao.leetcode.dynamic;
+package hao.leetcode.palindrome;
 
 public class LongestPalindrome {
     public static String longestPalindrome(String s){
